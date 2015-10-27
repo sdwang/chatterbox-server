@@ -22,7 +22,7 @@ module.exports.requestHandler = function(request, response) {
   //
   // Documentation for both request and response can be found in the HTTP section at
   // http://nodejs.org/documentation/api/
-
+  var url = require('url');
   this.data = {
     results: []
   };
@@ -45,7 +45,7 @@ module.exports.requestHandler = function(request, response) {
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = "text/plain";
+  headers['Content-Type'] = "application/json";
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
@@ -67,13 +67,13 @@ module.exports.requestHandler = function(request, response) {
   }
 
   if (request.method === 'POST') {
-    // if(request.url === '/classes/messages') {
     response.writeHead(201, headers);
-    request.on('data', function(d) {
-      this.data.results.push(d);
-    });
-    response.end();
-    // }
+    this.data.results.push(request._postData);
+    response.end(JSON.stringify(this.data));
+    // response.end(function(obj) {
+    //   console.log(obj);
+    //   this.data.results.push(obj);
+    // });
   }
 
   //response.end("Hello, World!");

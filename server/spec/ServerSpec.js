@@ -71,7 +71,8 @@ describe('Node Server Request Listener Function', function() {
 
     // Testing for a newline isn't a valid test
     // TODO: Replace with with a valid test
-    expect(res._data).to.equal(JSON.stringify(handler.data));
+    console.log(res._data);
+    expect(res._data).to.equal(JSON.stringify(handler.data.results[handler.data.results.length - 1]));
     expect(res._ended).to.equal(true);
   });
 
