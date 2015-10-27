@@ -11,9 +11,12 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-
+var url = require('url');
+  var data = {
+    results: []
+  };
 // module.export.requestHandler = function below
-module.exports.requestHandler = function(request, response) {
+var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -22,10 +25,7 @@ module.exports.requestHandler = function(request, response) {
   //
   // Documentation for both request and response can be found in the HTTP section at
   // http://nodejs.org/documentation/api/
-  var url = require('url');
-  this.data = {
-    results: []
-  };
+  
   // Do some basic logging.
   //
   // Adding more logging to your server can be an easy way to get passive
@@ -41,6 +41,23 @@ module.exports.requestHandler = function(request, response) {
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
 
+
+  if (request.method === 'POST') {
+    request.on('data', function(body) {
+      data.results.push(JSON.parse(body));
+    })
+    request.on('end', function() {
+      response.writeHead(201, headers);
+      response.end();
+    });
+  // response.end(function(obj) {
+  //   console.log(obj);
+  //   this.data.results.push(obj);
+  // });
+  } else if (request.method === 'GET') {
+    response.writeHead(200, headers);
+    response.end(JSON.stringify(data));
+  }
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
@@ -58,23 +75,7 @@ module.exports.requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  
-  if (request.method === 'GET') {
-    // if(request.url === '/classes/messages') {
-    response.writeHead(200, headers);
-    response.end(JSON.stringify(this.data));
-    // }
-  }
 
-  if (request.method === 'POST') {
-    response.writeHead(201, headers);
-    this.data.results.push(request._postData);
-    response.end(JSON.stringify(this.data));
-    // response.end(function(obj) {
-    //   console.log(obj);
-    //   this.data.results.push(obj);
-    // });
-  }
 
   //response.end("Hello, World!");
 
@@ -94,7 +95,10 @@ module.exports.requestHandler = function(request, response) {
 var defaultCorsHeaders = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "access-control-allow-headers": "X-Parse-Application-Id, , X-Parse-REST-API-Key, content-type, accept",
+  "access-control-allow-headers": "content-type, accept",
   "access-control-max-age": 10 // Seconds.
 };
+
+module.exports.requestHandler = requestHandler;
+
 
