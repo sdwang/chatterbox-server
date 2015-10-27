@@ -40,7 +40,7 @@ var requestHandler = function(request, response) {
 
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
-
+  // console.dir(origins);
 
   if (request.method === 'POST') {
     request.on('data', function(body) {
@@ -55,8 +55,21 @@ var requestHandler = function(request, response) {
   //   this.data.results.push(obj);
   // });
   } else if (request.method === 'GET') {
-    response.writeHead(200, headers);
-    response.end(JSON.stringify(data));
+    // if url doesnt exist
+    // if (origins.indexOf(request.url) === -1) {
+    //   response.writeHead(404, headers);
+    //   response.end();
+    // } else {
+      response.writeHead(200, headers);
+      response.end(JSON.stringify(data));
+    // }
+      // write 404 as statuscode
+      //response.end();
+    // else
+      
+  } else if (request.method === 'OPTIONS') {
+      response.writeHead(200, headers)
+      response.end();
   }
   // Tell the client we are sending them plain text.
   //

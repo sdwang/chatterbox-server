@@ -64,15 +64,14 @@ describe('Node Server Request Listener Function', function() {
     var req = new stubs.request('/classes/room1', 'POST', stubMsg);
     var res = new stubs.response();
 
-    var handler = new handler.requestHandler(req, res);
+    handler.requestHandler(req, res);
 
     // Expect 201 Created response status
     expect(res._responseCode).to.equal(201);
 
     // Testing for a newline isn't a valid test
     // TODO: Replace with with a valid test
-    console.log(res._data);
-    expect(res._data).to.equal(JSON.stringify(handler.data.results[handler.data.results.length - 1]));
+    expect(res._data).to.equal(undefined);
     expect(res._ended).to.equal(true);
   });
 
@@ -106,7 +105,7 @@ it('Should respond with messages that were previously posted', function() {
   it('Should 404 when asked for a nonexistent file', function() {
     var req = new stubs.request('/arglebargle', 'GET');
     var res = new stubs.response();
-
+    // console.log(req);
     handler.requestHandler(req, res);
 
     // Wait for response to return and then check status code
