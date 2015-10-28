@@ -1,15 +1,12 @@
-
 var app = {
 
   //TODO: The current 'addFriend' function just adds the class 'friend'
   //to all messages sent by the user
-  server: 'http://127.0.0.1:3000/',
+  server: 'http://127.0.0.1:3000/classes/chatterbox/',
   username: 'anonymous',
   roomname: 'lobby',
   lastMessageId: 0,
   friends: {},
-  ip: "127.0.0.1",
-  port: 300,
 
   init: function() {
     // Get username
@@ -61,13 +58,10 @@ var app = {
       url: app.server,
       type: 'GET',
       contentType: 'application/json',
-      // data: { order: '-createdAt'},
+      data: { order: '-createdAt'},
       success: function(data) {
         // Don't bother if we have nothing to work with
-        if (!data.results || !data.results.length) {
-          app.stopSpinner();
-          return;
-        }
+        if (!data.results || !data.results.length) { return; }
 
         // Get the last message
         var mostRecentMessage = data.results[data.results.length-1];
@@ -86,7 +80,6 @@ var app = {
         }
       },
       error: function(data) {
-        // app.stopSpinner();
         console.error('chatterbox: Failed to fetch messages');
       }
     });
